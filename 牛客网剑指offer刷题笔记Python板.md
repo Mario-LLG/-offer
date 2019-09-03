@@ -122,9 +122,16 @@ class Solution:
 
 
 
-![1567513916103](C:\Users\L\AppData\Roaming\Typora\typora-user-images\1567513916103.png)
+![](https://raw.githubusercontent.com/Mario-LLG/saved_picture/master/20190903212844.png)
 
 > 需要注意的一点是，if 。。elif。。else ，这里刚开始写成==if。。if。。else==
 >
 > 还有是不要理解为多算了几次，这里主要统计==1==出现的个数，所以可以重复算入==11==，要算两个*1*
 
+
+
+
+
+> 我的gethub图传的token
+>
+> 20c2850f7b98c54735380d6887c772aa916eb988
