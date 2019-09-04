@@ -10,6 +10,41 @@
 class Solution:
     def MoreThanHalfNum_Solution(self, numbers):
         # write code here
+        '''
+        numbers.sort()
+        i = 0
+        j = 0
+        numLen = len(numbers)
+        number = numbers[numLen/2]
+        for item in numbers:
+            if(number == item):
+                j += 1
+        if(j > numLen/2):
+            return number
+        else:
+            return 0
+         '''
+        #use dict
+        countNum = {}
+        lenNum = len(numbers)
+        for num in numbers:
+            if num in countNum:
+                countNum[num] += 1
+            else:
+                countNum[num] = 1
+            if countNum[num] > (lenNum >> 1):
+                return num
+        return 0
+```
+
+
+
+## 数组中出现次数超过一半的数字
+
+```python
+class Solution:
+    def MoreThanHalfNum_Solution(self, numbers):
+        # write code here
 
         #use dict
         countNum = {}
@@ -134,7 +169,35 @@ class Solution:
 
 **解题思路：**
 
+​	想办法从上一个丑数推断出下一个丑数，而不需要从1开始遍历再判断。从1开始的10个丑数分别为1，2，3，4，5，6，8，9，10，12。可以发现除了1以外，丑数都是由某个丑数*2或者*3或者*5得到的。如2是丑数1*2得到的，3是丑数1*3得到的，4是丑数1*4得到的，5是丑数1*5得到的，6是丑数2*3得到的
+
+使用3个指针（2,3,5），通过与指针相乘，找最小的下一个丑数，该指针往后挪一位，一直循环，可以找到第n个丑数
+
+```python
+class Solution:
+    def GetUglyNumber_Solution(self, index):
+        # write code here
+        if not index:
+            return 0
+        twoPointer = 0
+        threePointer = 0
+        fivePointer = 0
+        initialNum = [1]
+        num = 0
+        while num != index:
+            minNum = min(2*initialNum[twoPointer],3*initialNum[threePointer],5*initialNum[fivePointer])
+            initialNum.append(minNum)
+            num += 1
+            if(minNum == 2*initialNum[twoPointer]):
+                twoPointer += 1
+            if(minNum == 3*initialNum[threePointer]):
+                threePointer += 1
+            if(minNum == 5*initialNum[fivePointer]):
+                fivePointer += 1
+        return initialNum[num-1]
+```
+
+
+
 ​	
-
-
 
