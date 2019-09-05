@@ -10,41 +10,6 @@
 class Solution:
     def MoreThanHalfNum_Solution(self, numbers):
         # write code here
-        '''
-        numbers.sort()
-        i = 0
-        j = 0
-        numLen = len(numbers)
-        number = numbers[numLen/2]
-        for item in numbers:
-            if(number == item):
-                j += 1
-        if(j > numLen/2):
-            return number
-        else:
-            return 0
-         '''
-        #use dict
-        countNum = {}
-        lenNum = len(numbers)
-        for num in numbers:
-            if num in countNum:
-                countNum[num] += 1
-            else:
-                countNum[num] = 1
-            if countNum[num] > (lenNum >> 1):
-                return num
-        return 0
-```
-
-
-
-## 数组中出现次数超过一半的数字
-
-```python
-class Solution:
-    def MoreThanHalfNum_Solution(self, numbers):
-        # write code here
 
         #use dict
         countNum = {}
@@ -96,7 +61,7 @@ class Solution:
 
 **解题思路：**
 
-1. 循环暴力解法
+1. **循环暴力解法**
 
 - 直接贴代码，较容易理解
 
@@ -117,7 +82,7 @@ class Solution:
   }
   ```
 
-  2. 数学规律（==复杂度O(log~n~)==）
+  2. **数学规律（==复杂度O(log~n~)==）**
 
   一、 1的数目
 
@@ -161,43 +126,52 @@ class Solution:
 
 > 需要注意的一点是，if 。。elif。。else ，这里刚开始写成==if。。if。。else==
 >
-> 还有是不要理解为多算了几次，这里主要统计==1==出现的个数，所以可以重复算入==11==，要算两个*1*
+> 还有是不要理解为多算了几次，这里主要统计 ==1== 出现的个数，所以可以重复算入==11==，要算两个*1*
 
 ## 丑数
 
-**题目描述：**把只包含质因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为它包含质因子7。 习惯上我们把1当做是第一个丑数。求按从小到大的顺序的第N个丑数。
+**题目描述：**把只包含质因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为它包含质因子7。 习惯上我们S把1当做是第一个丑数。求按从小到大的顺序的第N个丑数。
 
 **解题思路：**
 
-​	想办法从上一个丑数推断出下一个丑数，而不需要从1开始遍历再判断。从1开始的10个丑数分别为1，2，3，4，5，6，8，9，10，12。可以发现除了1以外，丑数都是由某个丑数*2或者*3或者*5得到的。如2是丑数1*2得到的，3是丑数1*3得到的，4是丑数1*4得到的，5是丑数1*5得到的，6是丑数2*3得到的
+##数组中只出现一次的数字
 
-使用3个指针（2,3,5），通过与指针相乘，找最小的下一个丑数，该指针往后挪一位，一直循环，可以找到第n个丑数
+**题目描述：**一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字。
+
+**解题思路：**
+
+1. dict，使用字典进行存储，python中比较好用，但是Cpp或者java使用不方便
 
 ```python
 class Solution:
-    def GetUglyNumber_Solution(self, index):
+    # 返回[a,b] 其中ab是出现一次的两个数字
+    def FindNumsAppearOnce(self, array):
         # write code here
-        if not index:
-            return 0
-        twoPointer = 0
-        threePointer = 0
-        fivePointer = 0
-        initialNum = [1]
-        num = 0
-        while num != index:
-            minNum = min(2*initialNum[twoPointer],3*initialNum[threePointer],5*initialNum[fivePointer])
-            initialNum.append(minNum)
-            num += 1
-            if(minNum == 2*initialNum[twoPointer]):
-                twoPointer += 1
-            if(minNum == 3*initialNum[threePointer]):
-                threePointer += 1
-            if(minNum == 5*initialNum[fivePointer]):
-                fivePointer += 1
-        return initialNum[num-1]
+        # 字典
+        dict1 = {}
+        ret = []
+        for item in array:
+            if item in dict1:
+                dict1[item] += 1
+            else:
+                dict1[item] = 1
+        for item in array:
+            if dict1[item] == 1:
+                ret.append(item)
+        return ret
 ```
 
+2. 使用异或，利用异或的交换律，相同异或为零，不同为1的特性
 
+   *操作步骤：*
 
-​	
+   1. 每个数字之间异或，如果最终结果为0，则表明所有数字都出现过两次，反正结果为为零。
+   2. 将返回的值，提取二进制表示中的最后一位非零元素，如5（101），则返回值==ret==1（001），如6（110），放回2（010）。
+   3. 将==ret==与数组元素从头比较与，如果结果是零，则保留元素异或值，最终会得到第一个不同元素值，如果结果非零，则元素异或，返回最终的第二个不同值。
 
+   ```python
+   
+   
+   ```
+
+   
