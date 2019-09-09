@@ -53,7 +53,7 @@ class Solution:
 
 ```
 
-> 空间复杂度为o（1），将不相同的数干掉，遇到不同的数字就想换抵消
+> 空间复杂度为o（1），将不相同的数干掉，遇到不同的数字就相换抵消
 
 ## 整数中1出现的次数
 
@@ -134,6 +134,38 @@ class Solution:
 
 **解题思路：**
 
+	1. 通过观察，可以明显发现丑数是2，3，5，这些数字的多项式相乘。
+ 	2. 使用3个指针，分别表示乘2，3，5，初始值是1，分别与2，3，4相乘，找出最小的值，然后找到是乘数将其指针往后挪一位，一直循环，知道找到第==n==个丑数
+
+```python
+# -*- coding:utf-8 -*-
+class Solution:
+    def GetUglyNumber_Solution(self, index):
+        # write code here
+        if not index:
+            return 0
+        twoPointer = 0
+        threePointer = 0
+        fivePointer = 0
+        initialNum = [1]
+        num = 1
+        while num != index:
+            minNum = min(2*initialNum[twoPointer],3*initialNum[threePointer],5*initialNum[fivePointer])
+            initialNum.append(minNum)
+            num += 1
+            if(minNum == 2*initialNum[twoPointer]):
+                twoPointer += 1
+            if(minNum == 3*initialNum[threePointer]):
+                threePointer += 1
+            if(minNum == 5*initialNum[fivePointer]):
+                fivePointer += 1
+        return initialNum[num-1]
+```
+
+
+
+
+
 ##数组中只出现一次的数字
 
 **题目描述：**一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字。
@@ -170,8 +202,272 @@ class Solution:
    3. 将==ret==与数组元素从头比较与，如果结果是零，则保留元素异或值，最终会得到第一个不同元素值，如果结果非零，则元素异或，返回最终的第二个不同值。
 
    ```python
-   
+   # -*- coding:utf-8 -*-
+   class Solution:
+       # 返回[a,b] 其中ab是出现一次的两个数字
+    def FindNumsAppearOnce(self, array):
+           # write code here
+           xorValue = 0
+           andValue = None
+           for item in array:
+               xorValue = xorValue ^ item
+           if xorValue == 0:
+               return None
+           count = 0
+           mask = 0
+           firstValue = 0
+           secendValue = 0
+           while mask == 0:
+               mask = xorValue%2
+               xorValue = xorValue >> 1
+               count += 1
+           mask = mask << (count-1)
+           for item in array:
+               if (item & mask) == 0:
+                   firstValue = firstValue ^ item
+               else:
+                   secendValue = secendValue ^ item
+           ret = [firstValue,secendValue]
+           return ret
    
    ```
-
    
+   
+
+## 重建二叉树
+
+**题目描述：**输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。
+
+**解题思路：**
+
+​	step1: 通过前序遍历的第一个值，便是根节点，通过根节点，在中序遍历中找到根节点位置，前半段为左子树，后半段为右子树。
+
+​	step1:循环调用，传入左子树前序和中序可以得到左父，同理可得到右父。
+
+​	注意事项：python中==a[]==表是左闭右开，其次如果不设置==空==返回会报错。建立一个结构是将结构的参数传入函数,在pycharm中，这段代码不通，原因不详。
+
+```python
+class Solution:
+    # 返回构造的TreeNode根节点
+    def reConstructBinaryTree(self, pre, tin):
+        # write code here
+        if not pre or not tin:
+            return None
+        if len(pre) != len(tin):
+            return None
+        root = pre[0]
+        Tree= TreeNode(root)
+        order = tin.index(root)
+        leftTin = tin[:order]
+        rightTin = tin[order+1:]
+        leftPre = pre[1:order+1]
+        rightPre = pre[order+1:]
+        leftTree = self.reConstructBinaryTree(leftPre,leftTin)
+        rightTree = self.reConstructBinaryTree(rightPre,rightTin)
+        Tree.left = leftTree
+        Tree.right = rightTree
+        return Tree
+```
+
+##树的子结构
+
+**题目描述：**输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
+
+**解题思路：**
+
+1. 通过主函数入口，输入两颗树结构，首先访问根节点，如果节点根节点值相同，进入判断是否完全相等。如果根节点不同，则找出子节点，将子节点倒入循环。
+2. 通过一个euqal函数，判断是否完全相等，通过循环调用，判断其左右子节点是否相等，如果B树为空，就返回ture，如果A树为空，则返回False。
+
+```python
+# -*- coding:utf-8 -*-
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    def HasSubtree(self, pRoot1, pRoot2):
+        # write code here
+        if not pRoot1 or not pRoot2:
+            return None
+        def isequal(pRoot1,pRoot2):
+            if pRoot2 == None:
+                return True
+            elif pRoot1 == None:
+                return False
+            if pRoot1.val == pRoot2.val:
+                if not isequal(pRoot1.left,pRoot2.left): 
+                    return  False
+                if not isequal(pRoot1.right,pRoot2.right):
+                    return False
+                else:
+                    return True
+            
+        if pRoot1.val == pRoot2.val:
+            if isequal(pRoot1,pRoot2):
+                return True
+            else:
+                leftpRoot1 = pRoot1.left
+                rightRoot1 = pRoot1.right
+                if self.HasSubtree(leftpRoot1,pRoot2):
+                    return True
+                if self.HasSubtree(rightRoot1,pRoot2):
+                    return True
+            return False
+```
+
+
+
+## 二叉树镜像
+
+**题目描述：**操作给定的二叉树，将其变换为源二叉树的镜像。
+
+**解题思路：**
+
+​	直接调换左右节点，循环
+
+```python
+class Solution:
+    # 返回镜像树的根节点
+    def Mirror(self, root):
+        # write code here
+        if root == None:
+            return None
+        root.left,root.right = root.right, root.left
+        self.Mirror(root.left)
+        self.Mirror(root.right)
+        return root
+```
+
+## 从上往下打印二叉树
+
+题目描述：从上往下打印出二叉树的每个节点，同层节点从左至右打印。
+
+**解题思路：**
+
+​	这题不适合用递归处理，可以考虑使用循环，新建两个数组，一个存储需要遍历节点（顺序存储），一个存储返回值。
+
+```python
+class Solution:
+    # 返回从上到下每个节点值列表，例：[1,2,3]
+    def PrintFromTopToBottom(self, root):
+        # write code here
+        if not root:
+            return []
+        support = [root]
+        ret = []
+        while support:
+            temp = support[0]
+            ret.append(temp.val)
+            if temp.left:
+                support.append(temp.left)
+            if temp.right:
+                support.append(temp.right)
+            del support[0]
+        return ret 
+```
+
+![image-20190906131317689](https://tva1.sinaimg.cn/large/006y8mN6ly1g6pq036jpvj30c301rq2t.jpg)
+
+> 注意返回值是空数组
+>
+> 注意del 使用，遍历一个删除一个
+
+## 二叉搜索树的遍历
+
+**题目描述：**输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。
+
+**解题思路：**
+
+1. 什么是二叉搜索树，二叉搜索树， 右节点大于根节点大于左节点。
+2. 后序遍历最后一个值是根节点，通过根节点可以将树分为两部分，由于是二叉搜索树，所以左边部分小于根节点，右边部分大于根节点，如果不满足这个条件，就返回false，再次调用是否是二叉树的函数，
+
+```python
+class Solution:
+    def VerifySquenceOfBST(self, sequence):
+        # write code here
+        if sequence == []:
+            return None
+        node = sequence[-1]
+        count = 0
+        while node > sequence[count]:
+            count += 1
+        for item in sequence[count:]:
+            if item < node:
+                return False
+        self.VerifySquenceOfBST(sequence[0:count])
+        self.VerifySquenceOfBST(sequence[count:-1])
+        return True
+```
+
+## 二叉树中和为某一值的路径
+
+**题目描述：**输入一颗二叉树的根节点和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。路径定义为从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。(注意: 在返回值的list中，数组长度大的数组靠前)
+
+**解题思路：**
+
+1. 深度优先，利用先序遍历，当找到与输入整树相同的路径，返回该路径，否则一直向下找，如果找到叶节点，便弹出该元素，再利用先序遍历[参考](https://www.cnblogs.com/wanglei5205/p/8686863.html)该文档
+
+```python
+# -*- coding:utf-8 -*-
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution:
+    # 返回二维列表，内部每个列表表示找到的路径
+    def __init__(self):
+        self.onepath = []
+        self.totalpath = []
+    def FindPath(self, root, expectNumber):
+        # write code here
+        if not root:
+            return self.totalpath
+        self.onepath.append(root.val)
+        expectNumber -= root.val
+        if expectNumber == 0 and not root.left and not root.right:
+            self.totalpath.append(self.onepath[:])
+        elif expectNumber > 0:
+            self.FindPath(root.left,expectNumber)
+            self.FindPath(root.right,expectNumber)
+        self.onepath.pop()
+        return self.totalpath
+```
+
+![注意](https://tva1.sinaimg.cn/large/006y8mN6ly1g6t75a0jykj30ef01gt8p.jpg)
+
+> 这里这个将路径添加到返回数组用[:],如果直接append（onepath），会放回空数组，具体原暂时没有清楚
+
+2. 广度优先：通过一横排一横排数据访问，将前路径记录下来，如果到了某一行时
+
+```python
+#先序遍历
+def FindPath(self, root, expectNumber):
+	tempArray = []
+  tempArray[0] = root	
+  tempnoot = root
+  if tempArray[0].left:
+    tempArray.append(tempArray[0].left)
+  if tmepArray[0].right:
+    tempArray.append(tempArray[0].right)
+  dle(tempArray[0])
+```
+
+## 二叉树与双向链表
+
+**题目描述：**输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
+
+**解题思路：**
+
+![](https://cuijiahua.com/wp-content/uploads/2017/12/basis_26_1.jpg)
+
+二叉搜索树如上图所示，我们将其转换为配需双向链表。
+
+根据二叉搜索树的特点：左结点的值<根结点的值<右结点的值，我们不难发现，使用[二叉树](https://cuijiahua.com/blog/tag/二叉树/)的中序遍历出来的数据的数序，就是排序的顺序。因此，首先，确定了二叉搜索树的遍历方法。
+
+下来，我们看下图，我们可以把树分成三个部分：值为10的结点、根结点为6的左子树、根结点为14的右子树。根据排序双向链表的定义，值为10的结点将和它的左子树的最大一个结点链接起来，同时它还将和右子树最小的结点链接起来。
+
+![](https://cuijiahua.com/wp-content/uploads/2017/12/basis_26_3.jpg)
+
+按照中序遍历的顺序，当我们遍历到根结点时，它的左子树已经转换成一个排序的好的双向链表了，并且处在链表中最后一个的结点是当前值最大的结点。我们把值为8的结点和根结点链接起来，10就成了最后一个结点，接着我们就去遍历右子树，并把根结点和右子树中最小的结点链接起来。
