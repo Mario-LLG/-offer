@@ -471,3 +471,27 @@ def FindPath(self, root, expectNumber):
 ![](https://cuijiahua.com/wp-content/uploads/2017/12/basis_26_3.jpg)
 
 按照中序遍历的顺序，当我们遍历到根结点时，它的左子树已经转换成一个排序的好的双向链表了，并且处在链表中最后一个的结点是当前值最大的结点。我们把值为8的结点和根结点链接起来，10就成了最后一个结点，接着我们就去遍历右子树，并把根结点和右子树中最小的结点链接起来。
+
+## 连续子数组的最大和
+
+**题目描述**：HZ偶尔会拿些专业问题来忽悠那些非计算机专业的同学。今天测试组开完会后,他又发话了:在古老的一维模式识别中,常常需要计算连续子向量的最大和,当向量全为正数的时候,问题很好解决。但是,如果向量中包含负数,是否应该包含某个负数,并期望旁边的正数会弥补它呢？例如:{6,-3,-2,7,-15,1,2,2},连续子向量的最大和为8(从第0个开始,到第3个为止)。给一个数组，返回它的最大连续子序列的和，你会不会被他忽悠住？(子向量的长度至少是1)
+$$
+f(\mathrm{i})=\left\{\begin{array}{c}{\operatorname{arr}[\mathrm{i}] \quad \mathrm{i}=0 \space{或者} f[\mathrm{i}-1] \leq 0} \\ {f[\mathrm{i}-1]+\operatorname{arr}[\mathrm{i}] \space \space \mathrm{i} \neq 0 \space 并且 f[\mathrm{i}-1]>0}\end{array}\right.
+$$
+
+```python
+    def FindGreatestSumOfSubArray(self, array):
+        # write code here
+        if not array:
+            return []
+        cursum = array[0]
+        maxsum = array[0]
+        for i in range(1,len(array)):
+            cursum += array[i]
+            if(cursum < array[i]):
+                cursum = array[i]
+            if(cursum > maxsum):
+                maxsum = cursum
+        return maxsum
+```
+
