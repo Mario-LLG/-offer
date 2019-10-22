@@ -495,3 +495,41 @@ $$
         return maxsum
 ```
 
+## 把数组排成最小的数
+
+**题目描述**：输入一个正整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。例如输入数组{3，32，321}，则打印出这三个数字能排成的最小数字为321323。
+
+- 方法一 使用全排列
+
+![](https://raw.githubusercontent.com/Mario-LLG/saved_picture/master/20191022151627.png)
+
+```python
+import itertools
+class Solution:
+    def PrintMinNumber(self, numbers):
+        # write code here
+        if not numbers:
+            return ''
+        nums = []
+        num = list(itertools.permutations(numbers))
+        for item in num:
+            numl = ''.join(map(str,item))
+            nums.append(numl)
+        return min(map(int,nums))
+```
+
+- 方法二 重定义sorted规则
+
+![](https://raw.githubusercontent.com/Mario-LLG/saved_picture/master/20191022152325.png)
+
+```python
+class Solution:
+    def PrintMinNumber(self, numbers):
+        # write code here
+        if not numbers:
+            return ""
+        mycmp = lambda x, y:int(str(x)+str(y))-int(str(y)+str(x))
+        array = sorted(numbers, cmp=mycmp)
+        return ''.join([str(i) for i in array])
+```
+
